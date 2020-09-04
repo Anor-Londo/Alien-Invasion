@@ -75,6 +75,7 @@ def start_game(stats, ai_settings, sb, screen, ship, aliens, bullets):
     sb.prep_score()
     sb.prep_high_score()
     sb.prep_level()
+    sb.prep_ships()
 
     # Empty the list of aliens and bullets
     aliens.empty()
@@ -182,11 +183,12 @@ def check_high_score(stats, sb):
         sb.prep_high_score()
 
 
-def ship_hit(ai_settings, screen, ship, stats, bullets, aliens):
+def ship_hit(ai_settings, screen, sb, ship, stats, bullets, aliens):
     """Respond to ship being hit by alien."""
     if stats.ships_left > 0:
         # Decrement ships_left.
         stats.ships_left -= 1
+        sb.prep_ships()
 
         # Empty the list of aliens and bullets.
         bullets.empty()
@@ -203,17 +205,17 @@ def ship_hit(ai_settings, screen, ship, stats, bullets, aliens):
         pygame.mouse.set_visible(True)
 
 
-def check_aliens_bottom(ai_settings, screen, ship, stats, bullets, aliens):
+def check_aliens_bottom(ai_settings, screen, sb, ship, stats, bullets, aliens):
     """Check if any aliens have reached the bottom of the screen."""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # Treat this the same as if the ship got hit.
-            ship_hit(ai_settings, screen, ship, stats, bullets, aliens)
+            ship_hit(ai_settings, screen, sb, ship, stats, bullets, aliens)
             break
 
 
-def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+def update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets):
     """
     Check if the fleet is at an edge,
     and then update the postions of all aliens in the fleet.
@@ -223,10 +225,10 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
 
     # Look for alien-ship collisions.
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, screen, ship, stats, bullets, aliens)
+        ship_hit(ai_settings, screen, sb, ship, stats, bullets, aliens)
 
     # Look for aliens hitting the bottom of the screen.
-    check_aliens_bottom(ai_settings, screen, ship, stats, bullets, aliens)
+    check_aliens_bottom(ai_settings, screen, sb, ship, stats, bullets, aliens)
 
 
 def update_screen(ai_settings, screen, ship, aliens, bullets, stats, play_button, scoreboard):
