@@ -37,7 +37,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_events(ai_settings, screen, ship, bullets, stats, play_button):
+def check_events(ai_settings, screen, ship, aliens, bullets, stats, play_button):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -45,7 +45,7 @@ def check_events(ai_settings, screen, ship, bullets, stats, play_button):
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, ship, stats, play_button, aliens, bullets, mouse_x, mouse_y)
 
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ai_settings, screen, ship, bullets)
@@ -54,10 +54,21 @@ def check_events(ai_settings, screen, ship, bullets, stats, play_button):
             check_keyup_events(event, ship)
 
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, ship, stats, play_button, aliens, bullets, mouse_x, mouse_y):
     """Start a new game when the player clicks Play."""
     if play_button.rect.collidepoint(mouse_x, mouse_y):
         stats.game_active = True
+
+    # Reset the game stats
+    stats.reset_stats()
+
+    # Empty the list of aliens and bullets
+    aliens.empty()
+    bullets.empty()
+
+    create_fleet(ai_settings, screen, ship, aliens)
+    ship.center_ship()
+
 
 def get_number_rows(ai_settings, ship_height, alien_height):
     """Determine the number of rows of aliens that fit on the screen."""
@@ -82,7 +93,6 @@ def create_alien(ai_settings, screen, aliens, alien_number, row_number):
     alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
     alien.rect.x = alien.x
     aliens.add(alien)
-
 
 
 def create_fleet(ai_settings, screen, ship, aliens):
