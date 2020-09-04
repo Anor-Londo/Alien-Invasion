@@ -58,17 +58,22 @@ def check_play_button(ai_settings, screen, ship, stats, play_button, aliens, bul
     """Start a new game when the player clicks Play."""
     button_pressed = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_pressed and not stats.game_active:
-        stats.game_active = True
+        start_game(stats, ai_settings, screen, ship, aliens, bullets)
 
-        pygame.mouse.set_visible(False)
-        # Reset the game stats
-        stats.reset_stats()
-        # Empty the list of aliens and bullets
-        aliens.empty()
-        bullets.empty()
 
-        create_fleet(ai_settings, screen, ship, aliens)
-        ship.center_ship()
+def start_game(stats, ai_settings, screen, ship, aliens, bullets):
+    """Start a new game"""
+    stats.game_active = True
+
+    pygame.mouse.set_visible(False)
+    # Reset the game stats
+    stats.reset_stats()
+    # Empty the list of aliens and bullets
+    aliens.empty()
+    bullets.empty()
+
+    create_fleet(ai_settings, screen, ship, aliens)
+    ship.center_ship()
 
 
 def get_number_rows(ai_settings, ship_height, alien_height):
